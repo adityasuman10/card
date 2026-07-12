@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Info Card</title>
+<style>
+  :root {
+    /* ---- surface tokens (Apple-esque neutrals) ---- */
+    --ink: #1d1d1f;
+    --gray: #6e6e73;
+    --paper: #ffffff;
+    --page-bg: #f5f5f7;
+    --accent: #0071e3;
+    --chevron: #c7c7cc;
+
+    /* ---- blob tokens — logic untouched, colors made vivid ---- */
+    --blob-base-a: #8b2fef;
+    --blob-base-b: #ff5f9e;
+    --blob-highlight: #22d3ee;
+    --blob-pink: #ff2d55;
+    --blob-navy: #1e0a3c;
+    --blob-glow: #3b82f6;
+
+    /* ---- per-link accent colors ---- */
+    --c-resume: #ff3b30;
+    --c-website: #30b0c7;
+    --c-github: #1d1d1f;
+    --c-linkedin: #0a66c2;
+    --c-leetcode: #ffa116;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    position: relative;
+  }
+
+  body {
+    display: grid;
+    place-items: center;
+    min-height: 100vh;
+    font-size: 5vmin;
+    padding: 2em 1em;
+    background: var(--page-bg);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  }
+
+  /* ---------------- card ---------------- */
+
+  .surface {
+    width: 18.5em;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    border-radius: 1.7em;
+    overflow: hidden;
+    background: var(--paper);
+    box-shadow: 0 30px 60px -25px rgba(0, 0, 0, 0.35), 0 10px 20px -12px rgba(0, 0, 0, 0.12);
+    transition: transform 0.35s ease, box-shadow 0.35s ease;
+  }
+
+  .surface:hover {
+    transform: translateY(-0.15em);
+    box-shadow: 0 40px 75px -25px rgba(0, 0, 0, 0.4), 0 14px 24px -12px rgba(0, 0, 0, 0.14);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .surface {
+      transition: none;
+    }
+    .surface:hover {
+      transform: none;
+    }
+    .blob {
+      animation: none;
+    }
+  }
+
+  .hero {
+    display: flex;
+    justify-content: center;
+    padding: 2.2em 0 1.5em;
+  }
+
+  /* ---------------- blob (logic untouched — colors only) ---------------- */
+
+  .blob {
+    width: 7.5em;
+    height: 7.5em;
+    transform: translate(-0.1em, -0.1em);
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 0 0.1em 0.1em white, -0.3em 0.5em 1em rgba(0, 0, 0, 0.25);
+    filter: hue-rotate(0deg);
+    animation: hue-cycle 12s linear infinite;
+  }
+
+  @keyframes hue-cycle {
+    to {
+      filter: hue-rotate(360deg);
+    }
+  }
+
+  .blob::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    box-shadow: inset 0.15em -0.15em 0.03em 0.55em rgba(255, 255, 255, 0.14),
+      inset 0 0 0.1em 0.2em white;
+    border-radius: 50%;
+  }
+
+  .blob .layers {
+    width: 100%;
+    height: 100%;
+    transform: translate(-0.6em, -0.6em);
+    filter: url(#noise) saturate(110%) contrast(120%) brightness(110%);
+  }
+
+  .blob .layers > * {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    color: transparent;
+    background: currentcolor;
+    box-shadow: 0 0 1em 1em currentcolor;
+    border-radius: 1em 2em 4em 3em / 3em 4em 2em 1em;
+    filter: blur(1em);
+    mix-blend-mode: hard-light;
+  }
+
+  .blob [class*="red"] {
+    color: var(--blob-pink);
+  }
+
+  .blob [class*="blue"] {
+    color: var(--blob-navy);
+    box-shadow: 0 0 1em 1em var(--blob-glow);
+  }
+
+  .blob .blue-one {
+    transform: translate(-2.8em, -0.7em) scale(0.1, 0.14) skewx(10deg);
+    filter: blur(2em);
+  }
+
+  .blob .blue-two {
+    transform: translate(-1em, -1em) scale(0.26, 0.14) skewy(30deg);
+    filter: blur(1.5em);
+  }
+
+  .blob .blue-three {
+    transform: translate(0.8em, -2.7em) scale(0.2);
+    filter: blur(2em);
+  }
+
+  .blob .white-one {
+    color: var(--blob-highlight);
+    transform: translate(-0.2em, -1.2em) scale(0.45, 0.37) rotate(-54deg);
+  }
+
+  .blob .red-one {
+    transform: translate(2.7em, 0) scale(-0.14, -0.37) skewx(-60deg) rotate(26deg);
+  }
+
+  .blob .red-two {
+    transform: translate(-1.4em, 1.7em) scale(-0.25, -0.1) rotate(-20deg);
+  }
+
+  .blob .orange {
+    background: radial-gradient(var(--blob-base-a) 63%, var(--blob-base-b) 63%);
+  }
+
+  @media screen and (max-width: 540px) {
+    .blob {
+      border: 0.2em solid white;
+    }
+    .blob::after {
+      display: none;
+    }
+  }
+
+  /* ---------------- content ---------------- */
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.7em 1.5em 1.3em;
+  }
+
+  .identity {
+    text-align: center;
+    margin-bottom: 0.6em;
+  }
+
+  .name {
+    font-size: 0.66em;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+
+  .role {
+    font-size: 0.33em;
+    font-weight: 400;
+    color: var(--gray);
+    margin-top: 0.35em;
+  }
+
+  .links {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .link {
+    display: flex;
+    align-items: center;
+    gap: 0.75em;
+    padding: 0.6em 0.4em;
+    border-radius: 0.65em;
+    text-decoration: none;
+    color: var(--ink);
+    transition: background-color 0.2s ease;
+  }
+
+  .link:hover,
+  .link:focus-visible {
+    background: rgba(0, 0, 0, 0.045);
+  }
+
+  .link:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .badge {
+    width: 1.4em;
+    height: 1.4em;
+    border-radius: 0.4em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .badge svg {
+    width: 0.75em;
+    height: 0.75em;
+    stroke: white;
+    fill: none;
+    stroke-width: 1.9;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .badge.resume { background: var(--c-resume); }
+  .badge.website { background: var(--c-website); }
+  .badge.github { background: var(--c-github); }
+  .badge.linkedin { background: var(--c-linkedin); }
+  .badge.leetcode { background: var(--c-leetcode); }
+
+  .label {
+    flex: 1;
+    font-size: 0.32em;
+    font-weight: 500;
+  }
+
+  .chevron {
+    width: 0.85em;
+    height: 0.85em;
+    stroke: var(--chevron);
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    flex-shrink: 0;
+  }
+</style>
+</head>
+<body>
+
+  <div class="surface">
+
+    <div class="hero">
+      <div class="blob">
+        <div class="layers">
+          <div class="orange"></div>
+          <div class="white-one"></div>
+          <div class="red-one"></div>
+          <div class="red-two"></div>
+          <div class="blue-one"></div>
+          <div class="blue-two"></div>
+          <div class="blue-three"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- ↓ edit these two lines with your own name / role -->
+      <div class="identity">
+        <div class="name">Aditya Suman</div>
+        <div class="role">AI&ML Engineer</div>
+      </div>
+
+      <!-- ↓ edit the five href="#" values below with your real links -->
+      <nav class="links">
+
+        <a class="link" href="#" target="_blank" rel="noopener">
+          <span class="badge resume">
+            <svg viewBox="0 0 20 20"><path d="M7 13L13 7M8.5 7H13V11.5"/></svg>
+          </span>
+          <span class="label">Resume</span>
+          <svg class="chevron" viewBox="0 0 20 20"><path d="M8 4l6 6-6 6"/></svg>
+        </a>
+
+        <a class="link" href="https://adityasuman10.github.io/" target="_blank" rel="noopener">
+          <span class="badge website">
+            <svg viewBox="0 0 20 20"><path d="M7 13L13 7M8.5 7H13V11.5"/></svg>
+          </span>
+          <span class="label">Website</span>
+          <svg class="chevron" viewBox="0 0 20 20"><path d="M8 4l6 6-6 6"/></svg>
+        </a>
+
+        <a class="link" href="https://github.com/adityasuman10" target="_blank" rel="noopener">
+          <span class="badge github">
+            <svg viewBox="0 0 20 20"><path d="M7 13L13 7M8.5 7H13V11.5"/></svg>
+          </span>
+          <span class="label">GitHub</span>
+          <svg class="chevron" viewBox="0 0 20 20"><path d="M8 4l6 6-6 6"/></svg>
+        </a>
+
+        <a class="link" href="#" target="_blank" rel="noopener">
+          <span class="badge linkedin">
+            <svg viewBox="0 0 20 20"><path d="M7 13L13 7M8.5 7H13V11.5"/></svg>
+          </span>
+          <span class="label">LinkedIn</span>
+          <svg class="chevron" viewBox="0 0 20 20"><path d="M8 4l6 6-6 6"/></svg>
+        </a>
+
+        <a class="link" href="#" target="_blank" rel="noopener">
+          <span class="badge leetcode">
+            <svg viewBox="0 0 20 20"><path d="M7 13L13 7M8.5 7H13V11.5"/></svg>
+          </span>
+          <span class="label">LeetCode</span>
+          <svg class="chevron" viewBox="0 0 20 20"><path d="M8 4l6 6-6 6"/></svg>
+        </a>
+
+      </nav>
+
+    </div>
+
+  </div>
+
+  <svg width="0" height="0">
+    <filter id="noise" style="transform: translate3d(0,0,0)" x="0%" y="0%" width="100%" height="100%">
+      <feTurbulence stitchTiles="stitch" baseFrequency="0.01 0.01" numOctaves="4" result="NOISE" />
+      <feDisplacementMap in="SourceGraphic" in2="NOISE" scale="80" xChannelSelector="R" yChannelSelector="R"></feDisplacementMap>
+    </filter>
+  </svg>
+
+</body>
+</html>
